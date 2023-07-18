@@ -15,14 +15,18 @@ const pool = new Pool({
 app.get('/api/films', async (req, res) => {
     try {
       const { rows } = await pool.query('SELECT * FROM film');
-      console.log(rows);
-      //res.json(rows);
+      res.send(rows);
     } catch (error) {
       console.error('Error retrieving data:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  });
-  
-  app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-  });
+});
+
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Success' });
+});
+
+
+app.listen(8080, () => {
+  console.log('Server is running on port 8080');
+});

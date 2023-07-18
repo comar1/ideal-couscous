@@ -6,12 +6,14 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
+    "start": "sirv public --no-clear",
+    "devStart": "nodemon server/server2.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.0",
+    "nodemon": "^2.0.22",
     "rollup": "^3.15.0",
     "rollup-plugin-css-only": "^4.3.0",
     "rollup-plugin-livereload": "^2.0.0",
@@ -19,6 +21,8 @@
     "svelte": "^3.55.0"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "pg": "^8.11.1",
     "sirv-cli": "^2.0.0"
