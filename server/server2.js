@@ -34,7 +34,6 @@ app.get('/', function(req, res) {
 
 app.post('/post', async(req, res) => {
     console.log("POST request for homepage");
-    res.send("This is a POST request that adds to db");
 
     const user = req.body;
     
@@ -59,9 +58,10 @@ app.delete('/delete', function(req, res) {
     res.send("This is a DELETE request");
 })
 
-app.get('/film/:id', async(req, res) => {
+app.get('/film', async(req, res) => {
     try {
-        const result = await pool.query(`SELECT * FROM users WHERE id=${req.params.id}`)
+        const result = await pool.query(`SELECT * FROM users`)
+        //const result = await pool.query(`SELECT * FROM users`;)
         res.send( result.rows );
     } 
     catch {

@@ -4,44 +4,21 @@
   let films = [];
   let test = "";
   let testData = [];
+  let API_URL = "http://localhost:3000/";
 
-  async function fetchData() {
-    try {
-      const response = await fetch("/api/films");
-      if (response.ok) {
-        films = await response.json();
-      } else {
-        console.error("Error fetching data:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  // async function fetchData() {
+  //   try {
+  //     const response = await fetch("/api/films");
+  //     if (response.ok) {
+  //       films = await response.json();
+  //     } else {
+  //       console.error("Error fetching data:", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
 
-    try {
-      const response = await fetch("/api/test");
-      if (response.ok) {
-        test = await response.json();
-      } else {
-        console.error("Error fetching data:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
-  // Make the API request
-  fetch("/api/test")
-    .then((response) => response.json())
-    .then((data) => {
-      // Display the response in the frontend
-      console.log(data.message); // Success
-    })
-    .catch((error) => {
-      // Handle any errors
-      console.error("Error:", error);
-    });
-
-  fetchData();
+  // }
 
   onMount(async () => {
     // Make an HTTP GET request to the backend API endpoint
@@ -49,7 +26,6 @@
     testData = await response.json();
   });
 
-  let API_URL = "http://localhost:3000/";
   function refreshList() {
     fetch(API_URL + "api/hello")
       .then((res) => res.json())
@@ -57,36 +33,106 @@
         test = data;
       });
   }
+  async function apiTestData() {
+    try {
+      // fetch(API_URL + "api/testdata")
+      //   .then((res) => res.json());
+      // .then((data) => {
+      //   testData = data;
+      // });
+      const res = await fetch(API_URL + "api/films");
+      if (res.ok) {
+        films = await res.json();
+        console.log("testData present");
+      } else {
+        console.log("failed to catch json");
+      }
+    } catch {
+      console.log("error fetching test");
+    }
+  }
+  let promise = apiTestData();
 
+  async function film1() {}
   onMount(async () => {
-    refreshList();
+    apiTestData();
   });
+
+  let name = "";
+  let password = "";
+  let description = "";
+
+  async function handleSubmit() {
+    // Handle form submission here (to be implemented in Step 2)
+    const formData = { name, password, description };
+    try {
+      const response = await fetch(API_URL + "api/addUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        // Form data was successfully sent to the server
+        // You can perform additional actions if needed
+        console.log("Data submitted successfully!");
+      } else {
+        // Handle the response in case of an error
+        console.error("Error submitting data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error.message);
+    }
+    apiTestData();
+  }
 </script>
 
 <main>
   <h1>Film List</h1>
 
   {#if films.length > 0}
-    <ul>
+    <p>
       {#each films as film}
-        <li>{film.title}</li>
-        <li>{film.description}</li>
+        <div>
+          <p>
+            {film.id}: {film.name} - {film.description} <button>edit</button>
+            <button>delete</button>
+          </p>
+        </div>
       {/each}
-    </ul>
+    </p>
   {:else}
     <p>Loading...</p>
   {/if}
 
-  <p>test is {test}</p>
+  <!-- {#await apiTestData()}
+    <p>...loading test</p>
+  {:then}
+    <p>
+      {#each testData as data}
+        <p>{data.name}: {data.value}</p>
+      {/each}
+    </p>
+  {:catch error}
+    <p style="color: red">{error.message}</p>
+  {/await} -->
 
-  <h1>Test Data</h1>
-  <ul>
-    {#each testData as item}
-      <li>{item.name}: {item.value}</li>
-    {/each}
-  </ul>
-
-  <h4>{test} HAHA!</h4>
+  <form on:submit|preventDefault={handleSubmit}>
+    <label>
+      Name:
+      <input type="text" bind:value={name} />
+    </label>
+    <label>
+      Password:
+      <input type="password" bind:value={password} />
+    </label>
+    <label>
+      Description:
+      <textarea bind:value={description} />
+    </label>
+    <button type="submit">Submit</button>
+  </form>
 </main>
 
 <style>
